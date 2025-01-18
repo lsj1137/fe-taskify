@@ -4,6 +4,8 @@
 
 HTML, CSS, Vanila JS로 만든 칸반보드입니다.
 
+https://lsj1137.github.io/fe-taskify/
+
 기본적인 기능은 다음과 같습니다.
 - 칼럼 관련 기능
   - 칼럼 생성
