@@ -50,7 +50,20 @@ document.addEventListener('mousedown', (event) => {
     }
 });
 
+document.addEventListener('touchstart', (event) => {
+    if (!getIsCardEditing() && !getIsOrderChanging()) {
+        triggerListeners(event, event.target);
+    }
+});
+
+
 document.addEventListener('mousemove', (event) => {
+    if (getIsDragging()) {
+        triggerListeners(event, event.target)
+    }
+});
+
+document.addEventListener('touchmove', (event) => {
     if (getIsDragging()) {
         triggerListeners(event, event.target)
     }
@@ -59,7 +72,6 @@ document.addEventListener('mousemove', (event) => {
 document.addEventListener('mouseover', (event) => {
     triggerListeners(event, event.target)
 });
-
 
 document.addEventListener('mouseout', (event) => {
     triggerListeners(event, event.target)
@@ -72,6 +84,12 @@ document.addEventListener('mouseup', (event) => {
     }
 });
 
+document.addEventListener('touchend', (event) => {
+    if (getIsDragging()) {
+        finishDragCard(event, getClone());
+        setClone(null);
+    }
+});
 
 document.addEventListener('keydown', (event) => {
     if (getIsColumnNameChanging()) {
@@ -104,7 +122,6 @@ addListener(document.getElementById('history-button'), (event) => {
 })
 
 addListener(document.querySelector('.close-history'), (event) => {
-    console.log("HELLO");
     if (event.type==='click') {
         showHistory();
     }

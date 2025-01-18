@@ -78,20 +78,20 @@ function setEventForColumn(props) {
     addListener(parentElement.querySelector('#add-card-button'), (event)=>{
         if (event.type === "click") {
             addCard(props.columnId);
-        } else if (event.type === "mousemove") {
+        } else if (event.type === "mousemove" || event.type === "touchmove") {
             moveCard(event, getClone());
         }
     })
     addListener(parentElement.querySelector('#delete-cards-button'), (event)=>{
         if (event.type === "click") {
             delAllCard(props.columnId);
-        } else if (event.type === "mousemove") {
+        } else if (event.type === "mousemove" || event.type === "touchmove") {
             moveCard(event, getClone());
         }
     });
 
     addListener(parentElement,(event)=>{
-        if (event.type === "mousemove") {
+        if (event.type === "mousemove" || event.type === "touchmove") {
             moveCard(event, getClone());
             moveCardIllusion(event, parentElement, getClone());
         } else if (event.type === 'click') {
@@ -130,7 +130,7 @@ export function setEventForCard(props) {
     addListener(childElement.querySelector('#edit-card-button'), (event)=>{
         if (event.type === "click") {
             editCard(props.cardId);
-        } else if (event.type === "mousemove") {
+        } else if (event.type === "mousemove" || event.type === "touchmove") {
             moveCard(event, getClone());
         }
     })
@@ -138,19 +138,19 @@ export function setEventForCard(props) {
     addListener(childElement.querySelector('#del-card-button'), (event)=>{
         if (event.type === "click") {
             delCard(props.cardId);
-        } else if (event.type === "mousemove") {
+        } else if (event.type === "mousemove" || event.type === "touchmove") {
             moveCard(event, getClone());
         }
     })
     // 카드 드래그
     addListener(childElement, (event)=>{
-        if (event.type === "mousedown") {
+        if (event.type === "mousedown" || event.type === "touchstart") {
             if (!getClone()) {
                 setClone(childElement.cloneNode(true));
                 getClone().classList.add('dragging');
                 startDragCard(event, childElement, getClone(), props.cardId);
             }
-        } else if (event.type === "mousemove") {
+        } else if (event.type === "mousemove" || event.type === "touchmove") {
             moveCard(event, getClone());
             moveCardIllusion(event, parentElement, getClone());
         }
