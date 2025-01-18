@@ -2,8 +2,8 @@ import { renderTemplate, setEventForCard } from "./main.js";
 import { createDeleteCardAlert, hideAlert, overlay } from "./alert.js";
 import { createNewId } from "./utility.js";
 import { addListener } from "./event_listeners.js";
-import { addHistory, getIsDragging, getOriginColumn, saveData, setOriginColumn, toggleIsCardEditing, toggleIsDragging } from "./store.js";
-import { makeHistoryObj, renderHistory } from "./history.js";
+import { addHistory, getIsDragging, getIsHistoryOpen, getOriginColumn, saveData, setOriginColumn, toggleIsCardEditing, toggleIsDragging } from "./store.js";
+import { makeHistoryObj, renderHistory, showHistory } from "./history.js";
 import { getColumnTitle, getColumnTitleByCardId } from "./column_action.js";
 
 let gapX = 0;
@@ -165,22 +165,28 @@ function cancelEdit(card, tempMemory){
 // 카드 이동 시작
 export function startDragCard(event, original, clone, cardId) {
     toggleIsDragging();
-    const childElement = document.querySelector("#card-id"+cardId);
-    clone.style.width = window.getComputedStyle(childElement).width;
+    if (getIsHistoryOpen()) {
+        showHistory();
+    }
+    clone.style.width = window.getComputedStyle(original).width;
     draggingCardId = cardId;
     setOriginColumn(getColumnTitleByCardId(cardId));
     const columnArea = document.getElementById("column-area");
     [...columnArea.children].forEach((column)=> {
         let tempCard = original.cloneNode(true);
         tempCard.id = `temp-${clone.id}`;
-        tempCard.className = `temp-card`;
+        if (column === original.closest('.column-id')) {
+            tempCard.className = `temp-card-true`;
+        } else {
+            tempCard.className = `temp-card`;
+        }
         tempCard.style.opacity = 0.3;
         tempCard.style.display = 'none';
         column.querySelector(".card-list").prepend(tempCard);
     });
     document.body.appendChild(clone);
 
-    const parentRect = childElement.getBoundingClientRect(); // 부모 요소의 경계 정보
+    const parentRect = original.getBoundingClientRect(); // 부모 요소의 경계 정보
 
     const relativeX = event.clientX - parentRect.left; // 부모 요소 내부에서의 X 좌표
     const relativeY = event.clientY - parentRect.top;  // 부모 요소 내부에서의 Y 좌표
@@ -191,7 +197,7 @@ export function startDragCard(event, original, clone, cardId) {
     clone.style.left = `${event.clientX-gapX}px`;
     clone.style.top = `${event.clientY-gapY}px`;
     document.body.classList.add('no-select');
-    childElement.remove();
+    original.remove();
 }
 
 // 카드 이동
@@ -240,12 +246,14 @@ export function finishDragCard(event, clone) {
     realCard.id = "card-id"+draggingCardId;
     realCard.className = "card-id"
     realCard.style.opacity = 1;
+    realCard.style.display = 'flex';
     setEventForCard({"cardId": draggingCardId});
 
     toggleIsDragging();
     clone.remove();
     document.body.classList.remove('no-select');
-    let closestColumnId = event.target.closest('.column-id').id.slice(9);
+    const closestColumn = event.target.closest('.column-id') || realCard.closest('.column-id');
+    let closestColumnId = closestColumn.id.slice(9);
     let cardId = clone.id.slice(7);
     if (getOriginColumn()!==getColumnTitle(closestColumnId)) {
         let historyObj = makeHistoryObj("이동", getCardTitle(cardId), getOriginColumn(), getColumnTitle(closestColumnId));

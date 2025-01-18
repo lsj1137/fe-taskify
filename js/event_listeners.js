@@ -1,8 +1,8 @@
 import { toggleSortOrder,completeColumnName,  } from "./column_action.js";
 import { moveCard, finishDragCard } from "./card_action.js";
-import { getClone, getIsCardEditing, getIsColumnNameChanging, getIsDragging, getIsOrderChanging, resetTodo, saveData, setClone } from "./store.js";
+import { getClone, getIsCardEditing, getIsColumnNameChanging, getIsDragging, getIsHistoryOpen, getIsOrderChanging, resetTodo, saveData, setClone } from "./store.js";
 import { addColumn, closeFab, openFab, redo, undo } from "./fab_action.js";
-import { cleanHistoryData } from "./history.js";
+import { cleanHistoryData, showHistory } from "./history.js";
 
 
 const eventListeners = new WeakMap();
@@ -80,10 +80,14 @@ document.addEventListener('keydown', (event) => {
 });
 
 
-
-
 addListener(document.body, (event)=>{
-    moveCard(event, getClone());
+    if (event.type === 'click') {
+        if (getIsHistoryOpen()) {
+            showHistory();
+        }
+    } else if (event.type === 'mousemove') {
+        moveCard(event, getClone());
+    }
 })
 
 addListener(document.querySelector('.chip'), (event) =>{
@@ -92,6 +96,19 @@ addListener(document.querySelector('.chip'), (event) =>{
     }
 });
 
+
+addListener(document.getElementById('history-button'), (event) => {
+    if (event.type==='click') {
+        showHistory();
+    }
+})
+
+addListener(document.querySelector('.close-history'), (event) => {
+    console.log("HELLO");
+    if (event.type==='click') {
+        showHistory();
+    }
+})
 
 addListener(document.querySelector('.fab-area'), async (event)=>{
     if (event.type === "mouseover") {

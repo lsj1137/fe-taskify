@@ -1,4 +1,4 @@
-import { renderHistory } from "./history.js";
+import { cleanHistoryData, renderHistory } from "./history.js";
 import { renderTemplate } from "./main.js";
 import { todoFromJson, todoToJson, todoToObj } from "./utility.js";
 
@@ -215,9 +215,8 @@ async function renderCard(cardData, columnIndex) {
 
 export async function resetTodo() {
     document.querySelector('#column-area').innerHTML = ``;
-    document.getElementById('history-area').innerHTML = ``;
+    cleanHistoryData();
     localStorage.clear();
-    clearHistory();
     let initData = [
         {"title":"해야할 일"},
         {"title":"하고 있는 일"},

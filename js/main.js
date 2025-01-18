@@ -2,9 +2,9 @@ import { addCard, delAllCard, updateChildCount, changeColumnName, completeColumn
 import { editCard, delCard, startDragCard, moveCard, moveCardIllusion } from "./card_action.js";
 import { deleteColumnButton } from "./delete_column_button.js";
 import { addListener } from "./event_listeners.js";
-import { getClone, loadData, setClone } from "./store.js";
+import { getClone, getIsHistoryOpen, loadData, setClone } from "./store.js";
 import { calTimePassed } from "./utility.js";
-import { relocateHistory, toggleContentExist } from "./history.js";
+import { relocateHistory, showHistory, toggleContentExist } from "./history.js";
 
 // 탬플릿에 Props 적용
 function adaptProps(component, templateId, props) {
@@ -94,7 +94,11 @@ function setEventForColumn(props) {
         if (event.type === "mousemove") {
             moveCard(event, getClone());
             moveCardIllusion(event, parentElement, getClone());
-        }
+        } else if (event.type === 'click') {
+            if (getIsHistoryOpen()) {
+                showHistory();
+            }
+        } 
     })
 
     addListener(parentElement.querySelector('.column-name'), (event)=>{

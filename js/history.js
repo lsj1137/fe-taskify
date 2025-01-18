@@ -2,15 +2,12 @@ import { renderTemplate } from "./main.js";
 import { clearHistory, getHistory, getIsHistoryOpen, saveData, toggleIsHistoryOpen } from "./store.js";
 import { calTimePassed } from "./utility.js";
 
-const openHistoryButton = document.getElementById('history-button');
-const closeHistoryButton = document.querySelector('.close-history');
+
+const historyButton = document.getElementById('history-button');
 const dialog = document.getElementById('history-dialog');
+const historyArea = document.getElementById('history-area');
 
-openHistoryButton.addEventListener('click', (event) => {showHistory()});
-closeHistoryButton.addEventListener('click', (event)=> {showHistory()});
-
-
-function showHistory() {
+export function showHistory() {
     toggleIsHistoryOpen();
     if (getIsHistoryOpen()) {
         dialog.style.transform = `translateX(${-550}px)`;
@@ -20,7 +17,7 @@ function showHistory() {
     updateTime();
 
     // 버튼의 위치 정보 가져오기
-    const buttonRect = openHistoryButton.getBoundingClientRect();
+    const buttonRect = historyButton.getBoundingClientRect();
 
     // 다이얼로그 위치 계산 (버튼 아래에 표시)
     const dialogWidth = dialog.offsetWidth;
@@ -30,13 +27,12 @@ function showHistory() {
 }
 
 export function toggleContentExist() {
-    const historyArea = document.getElementById('history-area');
     const hasChildren = historyArea.querySelectorAll('.history-li').length > 0;
     historyArea.setAttribute('data-has-children', hasChildren);
 }
 
 export function relocateHistory() {// 버튼의 위치 정보 가져오기
-    const buttonRect = openHistoryButton.getBoundingClientRect();
+    const buttonRect = historyButton.getBoundingClientRect();
 
     // 다이얼로그 위치 계산 (버튼 아래에 표시)
     const dialogWidth = dialog.offsetWidth;
@@ -73,7 +69,6 @@ export function makeHistoryObj(actionType, subject, from, to) {
 
 
 export async function renderHistory(historyObj) {
-    const historyArea = document.getElementById('history-area');
     if (historyArea.getAttribute('data-has-children')==="true") {
         const divider = document.createElement('hr');
         divider.style.border = '1px solid #EFF0F6';
@@ -104,7 +99,6 @@ export async function renderHistory(historyObj) {
 
 export function cleanHistoryData() {
     clearHistory();
-    let historyArea = document.getElementById('history-area');
     historyArea.innerHTML = `<div class="no-history">사용자 활동 기록이 없습니다.</div>`;
     historyArea.setAttribute('data-has-children', false);
     saveData();
