@@ -4,7 +4,7 @@ import { createNewId } from "./utility.js";
 import { addListener } from "./event_listeners.js";
 import { addHistory, getIsDragging, getIsHistoryOpen, getOriginColumn, saveData, setOriginColumn, toggleIsCardEditing, toggleIsDragging } from "./store.js";
 import { makeHistoryObj, renderHistory, showHistory } from "./history.js";
-import { getColumnTitle, getColumnTitleByCardId } from "./column_action.js";
+import { getColumnTitle, getColumnTitleByCardId, updateChildCount } from "./column_action.js";
 
 let gapX = 0;
 let gapY = 0;
@@ -253,6 +253,7 @@ export function finishDragCard(event, clone) {
     clone.remove();
     document.body.classList.remove('no-select');
     const closestColumn = event.target.closest('.column-id') || realCard.closest('.column-id');
+    updateChildCount(closestColumn);
     let closestColumnId = closestColumn.id.slice(9);
     let cardId = clone.id.slice(7);
     if (getOriginColumn()!==getColumnTitle(closestColumnId)) {

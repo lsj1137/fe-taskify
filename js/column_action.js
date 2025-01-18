@@ -1,7 +1,7 @@
 import { overlay, createDeleteAllCardAlert, createDeleteColumnAlert, hideAlert } from "./alert.js";
 import { checkCardInput, confirmAddCard } from "./card_action.js";  
 import { addListener } from "./event_listeners.js";
-import { getIsOrderChanging, saveData, toggleIsColumnNameChanging, toggleIsOrderChanging } from "./store.js";
+import { getIsDragging, getIsOrderChanging, saveData, toggleIsColumnNameChanging, toggleIsOrderChanging } from "./store.js";
 
 let sortingOrder = 1;
 
@@ -108,8 +108,8 @@ export function delAllCard(columnId) {
 
 export function updateChildCount(parentElement) {
     const countDisplay = parentElement.querySelector('.card-count');
-    let cardList = parentElement.querySelector('.card-list')
-    let childCount = cardList.children.length;
+    let cardList = parentElement.querySelectorAll('.card-id')
+    let childCount = cardList.length;
     
     if (parseInt(childCount)>99) {
         countDisplay.textContent = "99+";
